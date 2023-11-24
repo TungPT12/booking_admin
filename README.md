@@ -1,20 +1,20 @@
 # booking_admin
 
-### Introduction
+## Introduction
 * Project provide data for FE and process logic.
 * The project can manage hotel,  manage user, manage room, manage type,  manage area, view transactions, login and logout.
 
-### Link Live
+## Link Live
 
 * https://booking-admin-webstite.netlify.app/
 
-### Build Withs
+## Build Withs
 
 * [![React][React.js]][React-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 
 
-### Technology
+## Technology
 
 * react bootstrap version ^5.3.0 (https://react-bootstrap.netlify.app/docs/getting-started/introduction/).
 * axios version ^1.5.1 (https://www.npmjs.com/package/axios).
@@ -23,7 +23,7 @@
 * react-date-range version ^1.4.0, (https://www.npmjs.com/package/react-date-range).
 
 
-### Getting Started
+## Getting Started
 
 Before you continue, ensure you meet the following requirements:
 
@@ -31,7 +31,7 @@ Before you continue, ensure you meet the following requirements:
 * You have installed the latest version of npm (command: 'npm install download). 
 * You have installed of VSCode (https://visualstudio.microsoft.com/downloads).
 
-Install
+### Install
 
 * Clone project
 * Clone back end project (https://github.com/TungPT12/booking_server.git).
@@ -41,7 +41,7 @@ Install
 * Run project with command 'npm start'.
 
 
-Contact me:
+## Contact me:
 
 * Phone number: 0988486443.
 * Email: boypham12042000@gmail.com.
