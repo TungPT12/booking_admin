@@ -7,12 +7,15 @@ import TagTransaction from '../../components/TagTransaction/TagTransaction';
 import { getAllTransactionAdminApi } from '../../apis/transaction';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 
 function Transactions() {
     const { token } = useSelector(state => state.authn)
     const [transactions, setTransactions] = useState([]);
-    const [totalPage, setTotalPage] = useState(1)
-    const [page, setPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(1);
+    const [page, setPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
+
     const loadTransactions = () => {
         getAllTransactionAdminApi(token, page).then((response) => {
             if (response.status === 403 || response.status === 401) {
@@ -25,7 +28,8 @@ function Transactions() {
             return response.data;
         }).then((data) => {
             setTotalPage(data.total_pages);
-            setTransactions(data.results)
+            setTransactions(data.results);
+            setIsLoading(false);
         }).catch((error) => {
             alert(error.message);
             console.log(error)
@@ -69,68 +73,72 @@ function Transactions() {
     }, [page])
 
     return (
-        <Card>
-            <div className='px-2'>
-                <div className='d-flex justify-content-between py-2 align-items-center'>
-                    <h3 className={`${styles['title']} pe-3 pt-3 pb-2 mb-0 text-capitalize`}>transactions list</h3>
-                </div>
-                <div className={`${styles['transactions']}`}>
-                    <table className={`${styles['table']} w-100`}>
-                        <thead className='w-100 bg-light'>
-                            <tr className='w-100'>
-                                <th className='f-1'>
-                                    <span className='d-flex justify-content-center'>
-                                        <input type="checkbox" />
-                                    </span>
-                                </th>
-                                <th className='f-5 text-uppercase ps-3'>
-                                    <span>id</span>
-                                </th>
-                                <th className='f-4 text-capitalize ps-3'>
-                                    <span className='pe-5'>user</span>
-                                </th>
-                                <th className='f-4 text-capitalize ps-3'>
-                                    <span>hotel</span>
-                                </th>
-                                <th className='f-3 text-capitalize ps-3'>
-                                    <span>room</span>
-                                </th>
-                                <th className='f-4 ps-2 text-capitalize'>
-                                    <span>date</span>
-                                </th>
-                                <th className='f-2 text-capitalize ps-3'>
-                                    <span>price</span>
-                                </th>
-                                <th className='f-3 text-capitalize ps-2'>
-                                    <span className=''>payment method</span>
-                                </th>
-                                <th className='f-2 text-capitalize ps-3'>
-                                    <span>Status</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {renderTransactions(transactions)}
-                        </tbody>
-                    </table>
-                    <div className={`${styles['paging']} mt-5 d-flex justify-content-end px-5 py-3`}>
-                        <span className='me-4'>{page}-{totalPage} of {totalPage}</span>
-                        <div className='d-flex'>
-                            <button disabled={page === 1} onClick={() => {
-                                setPage(page - 1)
-                            }} className={`${styles['pre-btn']} d-flex justify-content-center align-items-center me-1 outline-none`}>
-                                <FontAwesomeIcon icon={faChevronLeft} className={`${styles['chevron-icon']}  px-3`} />
-                            </button>
-                            <button disabled={page === totalPage} onClick={() => {
-                                setPage(page + 1)
-                            }} className={`${styles['next-btn']} d-flex justify-content-center align-items-center py-1  outline-none`}>
-                                <FontAwesomeIcon icon={faChevronRight} className={`${styles['chevron-icon']} px-3`} />
-                            </button>
+        <>
+            {
+                isLoading ? <LoadingSpinner /> : <Card>
+                    <div className='px-2'>
+                        <div className='d-flex justify-content-between py-2 align-items-center'>
+                            <h3 className={`${styles['title']} pe-3 pt-3 pb-2 mb-0 text-capitalize`}>transactions list</h3>
+                        </div>
+                        <div className={`${styles['transactions']}`}>
+                            <table className={`${styles['table']} w-100`}>
+                                <thead className='w-100 bg-light'>
+                                    <tr className='w-100'>
+                                        <th className='f-1'>
+                                            <span className='d-flex justify-content-center'>
+                                                <input type="checkbox" />
+                                            </span>
+                                        </th>
+                                        <th className='f-5 text-uppercase ps-3'>
+                                            <span>id</span>
+                                        </th>
+                                        <th className='f-4 text-capitalize ps-3'>
+                                            <span className='pe-5'>user</span>
+                                        </th>
+                                        <th className='f-4 text-capitalize ps-3'>
+                                            <span>hotel</span>
+                                        </th>
+                                        <th className='f-3 text-capitalize ps-3'>
+                                            <span>room</span>
+                                        </th>
+                                        <th className='f-4 ps-2 text-capitalize'>
+                                            <span>date</span>
+                                        </th>
+                                        <th className='f-2 text-capitalize ps-3'>
+                                            <span>price</span>
+                                        </th>
+                                        <th className='f-3 text-capitalize ps-2'>
+                                            <span className=''>payment method</span>
+                                        </th>
+                                        <th className='f-2 text-capitalize ps-3'>
+                                            <span>Status</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {renderTransactions(transactions)}
+                                </tbody>
+                            </table>
+                            <div className={`${styles['paging']} mt-5 d-flex justify-content-end px-5 py-3`}>
+                                <span className='me-4'>{page}-{totalPage} of {totalPage}</span>
+                                <div className='d-flex'>
+                                    <button disabled={page === 1} onClick={() => {
+                                        setPage(page - 1)
+                                    }} className={`${styles['pre-btn']} d-flex justify-content-center align-items-center me-1 outline-none`}>
+                                        <FontAwesomeIcon icon={faChevronLeft} className={`${styles['chevron-icon']}  px-3`} />
+                                    </button>
+                                    <button disabled={page === totalPage} onClick={() => {
+                                        setPage(page + 1)
+                                    }} className={`${styles['next-btn']} d-flex justify-content-center align-items-center py-1  outline-none`}>
+                                        <FontAwesomeIcon icon={faChevronRight} className={`${styles['chevron-icon']} px-3`} />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </Card>
+                </Card>
+            }
+        </>
     );
 }
 

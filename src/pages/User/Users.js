@@ -6,10 +6,12 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { disableUserAdminApi, enableUserAdminApi, getAllUserAdminApi } from '../../apis/user';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 
 function Users() {
     const [users, setUsers] = useState([]);
-    const [totalPage, setTotalPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(1)
     const { token } = useSelector(state => state.authn)
     const loadUser = () => {
@@ -24,7 +26,8 @@ function Users() {
             return response.data;
         }).then((data) => {
             setTotalPage(data.total_pages);
-            setUsers(data.results)
+            setUsers(data.results);
+            setIsLoading(false);
         }).catch((error) => {
             alert(error.message);
             console.log(error)
@@ -70,22 +73,8 @@ function Users() {
     }
 
     useEffect(() => {
-        getAllUserAdminApi(token, { page: page }).then((response) => {
-            if (response.status === 403 || response.status === 401) {
-                localStorage.removeItem('bookingAdminToken');
-                window.location.href = '/admin/login'
-            }
-            if (response.status !== 200) {
-                throw new Error('Something wrong');
-            }
-            return response.data;
-        }).then((data) => {
-            setTotalPage(data.total_pages);
-            setUsers(data.results)
-        }).catch((error) => {
-            alert(error.message);
-            console.log(error)
-        })
+        loadUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page])
 
     const renderUsers = (users) => {
@@ -110,64 +99,66 @@ function Users() {
 
     return (
         <div>
-            <Card>
-                <div className='px-4 pb-3'>
-                    <div className='d-flex justify-content-between py-2 align-items-center'>
-                        <h3 className={`${styles['title']} pe-3 pt-3 pb-2 mb-0 text-capitalize`}>Users list</h3>
-                        <Link to="/admin/user/add" className={`${styles['btn-add_user']} text-decoration-none`}>Add new </Link>
-                    </div>
-                    <div className={`${styles['list-user']}`}>
-                        <table className={`${styles['table']} w-100`}>
-                            <thead className='w-100 bg-light'>
-                                <tr className='w-100'>
-                                    <th className='f-1 text-capitalize'>
-                                        <span className='d-flex justify-content-center'>
-                                            role
-                                        </span>
-                                    </th>
-                                    <th className='f-3 text-uppercase ps-3'>
-                                        <span>id</span>
-                                    </th>
-                                    <th className='f-3 text-capitalize ps-3'>
-                                        <span className='pe-5'>Full Name</span>
-                                    </th>
-                                    <th className='f-2 text-capitalize ps-3 pe-3'>
-                                        <span>User name</span>
-                                    </th>
-                                    <th className='f-2 text-capitalize ps-1'>
-                                        <span>password</span>
-                                    </th>
-                                    <th className='f-3 text-capitalize ps-3'>
-                                        <span>Email</span>
-                                    </th>
-                                    <th className='f-1 text-capitalize ps-3'>
-                                        <span>Action</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {renderUsers(users)}
-                            </tbody>
-                        </table>
-                        <div className={`${styles['paging']} mt-5 d-flex justify-content-end px-5 py-3`}>
-                            <span className='me-4'>{page}-{totalPage} of {totalPage}</span>
-                            <div className='d-flex'>
-                                <button disabled={page === 1} onClick={() => {
-                                    setPage(page - 1)
-                                }} className={`${styles['pre-btn']} d-flex justify-content-center align-items-center me-1 outline-none`}>
-                                    <FontAwesomeIcon icon={faChevronLeft} className={`${styles['chevron-icon']}  px-3`} />
-                                </button>
-                                <button disabled={page === totalPage} onClick={() => {
-                                    setPage(page + 1)
-                                }} className={`${styles['next-btn']} d-flex justify-content-center align-items-center py-1  outline-none`}>
-                                    <FontAwesomeIcon icon={faChevronRight} className={`${styles['chevron-icon']} px-3`} />
-                                </button>
+            {
+                isLoading ? <LoadingSpinner /> : <Card>
+                    <div className='px-4 pb-3'>
+                        <div className='d-flex justify-content-between py-2 align-items-center'>
+                            <h3 className={`${styles['title']} pe-3 pt-3 pb-2 mb-0 text-capitalize`}>Users list</h3>
+                            <Link to="/admin/user/add" className={`${styles['btn-add_user']} text-decoration-none`}>Add new </Link>
+                        </div>
+                        <div className={`${styles['list-user']}`}>
+                            <table className={`${styles['table']} w-100`}>
+                                <thead className='w-100 bg-light'>
+                                    <tr className='w-100'>
+                                        <th className='f-1 text-capitalize'>
+                                            <span className='d-flex justify-content-center'>
+                                                role
+                                            </span>
+                                        </th>
+                                        <th className='f-3 text-uppercase ps-3'>
+                                            <span>id</span>
+                                        </th>
+                                        <th className='f-3 text-capitalize ps-3'>
+                                            <span className='pe-5'>Full Name</span>
+                                        </th>
+                                        <th className='f-2 text-capitalize ps-3 pe-3'>
+                                            <span>User name</span>
+                                        </th>
+                                        <th className='f-2 text-capitalize ps-1'>
+                                            <span>password</span>
+                                        </th>
+                                        <th className='f-3 text-capitalize ps-3'>
+                                            <span>Email</span>
+                                        </th>
+                                        <th className='f-1 text-capitalize ps-3'>
+                                            <span>Action</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {renderUsers(users)}
+                                </tbody>
+                            </table>
+                            <div className={`${styles['paging']} mt-5 d-flex justify-content-end px-5 py-3`}>
+                                <span className='me-4'>{page}-{totalPage} of {totalPage}</span>
+                                <div className='d-flex'>
+                                    <button disabled={page === 1} onClick={() => {
+                                        setPage(page - 1)
+                                    }} className={`${styles['pre-btn']} d-flex justify-content-center align-items-center me-1 outline-none`}>
+                                        <FontAwesomeIcon icon={faChevronLeft} className={`${styles['chevron-icon']}  px-3`} />
+                                    </button>
+                                    <button disabled={page === totalPage} onClick={() => {
+                                        setPage(page + 1)
+                                    }} className={`${styles['next-btn']} d-flex justify-content-center align-items-center py-1  outline-none`}>
+                                        <FontAwesomeIcon icon={faChevronRight} className={`${styles['chevron-icon']} px-3`} />
+                                    </button>
 
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </Card>
+                </Card>
+            }
         </div>
     );
 }

@@ -7,6 +7,9 @@
 ## Link Live
 
 * https://booking-admin-webstite.netlify.app/
+* account admin for login: 
+    - email: boypham12042000@gmail.com
+    - password: 123456
 
 ## Build Withs
 

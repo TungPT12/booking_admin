@@ -132,7 +132,6 @@ function App() {
   const dispatch = useDispatch();
   const renderRouter = (listRouter) => {
     return listRouter.map((router) => {
-      // return <Route key={router.path} path={router.path} element=<MainPage>{router.element}</MainPage> />
       return <Route key={router.path} path={router.path} element={
         isAuthn ? <MainPage>
           {router.element}
