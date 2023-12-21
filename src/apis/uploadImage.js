@@ -1,8 +1,9 @@
 import axios from 'axios';
-
+const URL = "https://booking-server-gafr.onrender.com/api/"
+// const URL = "http://localhost:5000/api/upload"
 const uploadImageApi = async (formData) => {
     try {
-        const response = axios.post('http://localhost:5000/api/upload', formData, {
+        const response = axios.post(URL, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             }
