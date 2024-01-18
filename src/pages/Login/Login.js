@@ -29,6 +29,7 @@ function Login() {
             const response = await login(username, password);
             if (response.status === 401) {
                 setWrongUser(true);
+                setIsLoadingSpinnerModal(false)
                 return;
             }
             if (response.status !== 200) {
@@ -61,7 +62,7 @@ function Login() {
                 </div>
                 <div className={`h-100 w-100 d-flex justify-content-center align-items-center flex-column`}>
                     <h1 className='text-center'>Login</h1>
-                    {wrongUser ? <p>Wrong username or password</p> : <></>}
+                    {wrongUser ? <p className={`${styles['wrong']} alert-danger text-danger bg-danger-subtle px-2 mb-2 font-italic`}>* Wrong username or password</p> : <></>}
                     <form onSubmit={(e) => {
                         e.preventDefault()
                         setIsLoadingSpinnerModal(true);
